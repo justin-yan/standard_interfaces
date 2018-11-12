@@ -20,7 +20,7 @@ public class RationalTest {
                 Rational.fromInt(1002),
                 Rational.fromInt(1024),
                 Rational.fromInt(1123),
-                Rational.fromInt(144)
+                Rational.fromInt(144).divide(Rational.fromInt(32508))
         );
         for (Rational rat : testList) {
             assertEquals(rat, Rational.deserialize(rat.serialize()));
