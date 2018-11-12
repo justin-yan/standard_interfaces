@@ -12,6 +12,7 @@ public class Rational implements Comparable<Rational> {
     private BigInteger denominator;
 
     Rational(BigInteger numerator, BigInteger denominator) {
+        // Maintain invariants of fully reduced fraction + always positive denominator as canonical representation.
         BigInteger gcd = numerator.gcd(denominator);
         if (denominator.signum() == -1) {
             this.numerator = numerator.divide(gcd).negate();
@@ -44,7 +45,11 @@ public class Rational implements Comparable<Rational> {
 
     @Override
     public int compareTo(Rational otherRational) {
-        return 1; // TODO: implement proper compare functionality using LCM for denoms
+        BigInteger denomGcd = denominator.gcd(otherRational.denominator);
+        BigInteger factor1 = otherRational.denominator.divide(denomGcd);
+        BigInteger factor2 = denominator.divide(denomGcd);
+
+        return numerator.multiply(factor1).compareTo(otherRational.numerator.multiply(factor2));
     }
 
     public Rational add(Rational addend) {
@@ -82,28 +87,37 @@ public class Rational implements Comparable<Rational> {
     }
 
 
-    public BigDecimal render(int digitsOfPrecision, RoundingMode roundingMode) {
-        return new BigDecimal(numerator).divide(new BigDecimal(denominator), digitsOfPrecision, roundingMode);
+    public BigDecimal render(int numberOfDigitsAfterDecimalPoint, RoundingMode roundingMode) {
+        return new BigDecimal(numerator).divide(new BigDecimal(denominator), numberOfDigitsAfterDecimalPoint, roundingMode);
     }
 
-    public static Rational fromString(String sourceString) {
-        return null;
-    }
 
     public static Rational fromInt(Integer sourceInt) {
-        return new Rational(BigInteger.valueOf(sourceInt), BigInteger.valueOf(1));
+        return new Rational(BigInteger.valueOf(sourceInt), BigInteger.ONE);
     }
 
     public static Rational fromLong(Long sourceLong) {
-        return null;
+        return new Rational(BigInteger.valueOf(sourceLong), BigInteger.ONE);
+    }
+
+    public static Rational fromBigInteger(BigInteger sourceBigInteger) {
+        return new Rational(sourceBigInteger, BigInteger.ONE);
+    }
+
+    public static Rational fromBigDecimal(BigDecimal sourceBigDecimal) {
+        return new Rational(sourceBigDecimal.unscaledValue(), BigInteger.TEN.pow(sourceBigDecimal.scale()));
+    }
+
+    public static Rational fromString(String sourceString) {
+        return fromBigDecimal(new BigDecimal(sourceString));
     }
 
     public static Rational fromFloat(Float sourceFloat) {
-        return null;
+        return fromString(Float.toString(sourceFloat));
     }
 
     public static Rational fromDouble(Double sourceDouble) {
-        return null;
+        return fromString(Double.toString(sourceDouble));
     }
 
 
