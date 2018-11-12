@@ -22,7 +22,7 @@ This collection of libraries provides the following:
 
 ## Design
 
-The general principle is to use arbitrary-precision *integer* formats in order to retain the numerator/denominator values and preserving those through all calculations, where the canonical representation is always the *fully reduced* fraction.  Only when an actual decimal needs to be *rendered* do we perform the division and rounding as needed.
+The general principle is to use arbitrary-precision *integer* formats in order to retain the numerator/denominator values and preserving those through all calculations, where the canonical representation is always the *fully reduced* fraction with the denominator *always* being a positive Integer.  Only when an actual decimal needs to be *rendered* do we perform the division and rounding as needed.
 
 The serialization format simply uses String in order to avoid precision loss:
 

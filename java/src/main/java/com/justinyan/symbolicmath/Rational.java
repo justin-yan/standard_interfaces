@@ -1,7 +1,10 @@
 package com.justinyan.symbolicmath;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 public class Rational implements Comparable<Rational> {
 
@@ -9,8 +12,14 @@ public class Rational implements Comparable<Rational> {
     private BigInteger denominator;
 
     Rational(BigInteger numerator, BigInteger denominator) {
-        this.numerator = numerator;
-        this.denominator = denominator;
+        BigInteger gcd = numerator.gcd(denominator);
+        if (denominator.signum() == -1) {
+            this.numerator = numerator.divide(gcd).negate();
+            this.denominator = denominator.divide(gcd).negate();
+        } else {
+            this.numerator = numerator.divide(gcd);
+            this.denominator = denominator.divide(gcd);
+        }
     }
 
     @Override
@@ -38,54 +47,82 @@ public class Rational implements Comparable<Rational> {
         return 1; // TODO: implement proper compare functionality using LCM for denoms
     }
 
-    public Rational add(Rational addendum) {
-        return null;
-    };
+    public Rational add(Rational addend) {
+        BigInteger denomGcd = denominator.gcd(addend.denominator);
+        BigInteger factor1 = addend.denominator.divide(denomGcd);
+        BigInteger factor2 = denominator.divide(denomGcd);
 
-    public Rational subtract(Rational subtrandum) {
-        return null;
-    };
+        // Find the LCM of the denominator, multiply numerators by sufficient amount, add them together.
+        BigInteger newNumerator = numerator.multiply(factor1).add(addend.numerator.multiply(factor2));
+        Rational sum = new Rational(newNumerator, factor1.multiply(factor2).multiply(denomGcd));
+        return sum;
+    }
 
-    public Rational multiply(Rational multiplendum) {
-        return null;
-    };
+    public Rational subtract(Rational subtrahend) {
+        BigInteger denomGcd = denominator.gcd(subtrahend.denominator);
+        BigInteger factor1 = subtrahend.denominator.divide(denomGcd);
+        BigInteger factor2 = denominator.divide(denomGcd);
+
+        // Find the LCM of the denominator, multiply numerators by sufficient amount, subtract them.
+        BigInteger newNumerator = numerator.multiply(factor1).subtract(subtrahend.numerator.multiply(factor2));
+        Rational difference = new Rational(newNumerator, factor1.multiply(factor2).multiply(denomGcd));
+        return difference;
+    }
+
+    public Rational multiply(Rational factor) {
+        // Multiply numerators and denominators.
+        Rational product = new Rational(numerator.multiply(factor.numerator), denominator.multiply(factor.denominator));
+        return product;
+    }
 
     public Rational divide(Rational divisor) {
-        return null;
-    };
+        // Multiply numerator1xdenominator2 and vice versa.
+        Rational quotient = new Rational(numerator.multiply(divisor.denominator), denominator.multiply(divisor.denominator));
+        return quotient;
+    }
 
 
-    public BigDecimal render(int digitsOfPrecision) {
-        return null;
-    };
+    public BigDecimal render(int digitsOfPrecision, RoundingMode roundingMode) {
+        return new BigDecimal(numerator).divide(new BigDecimal(denominator), digitsOfPrecision, roundingMode);
+    }
 
-    public static Rational fromString(String) {
+    public static Rational fromString(String sourceString) {
         return null;
-    };
+    }
 
     public static Rational fromInt(Integer sourceInt) {
         return new Rational(BigInteger.valueOf(sourceInt), BigInteger.valueOf(1));
-    };
+    }
 
-    public static Rational fromLong(Long) {
+    public static Rational fromLong(Long sourceLong) {
         return null;
-    };
+    }
 
-    public static Rational fromFloat(Float) {
+    public static Rational fromFloat(Float sourceFloat) {
         return null;
-    };
+    }
 
-    public static Rational fromDouble(Double) {
+    public static Rational fromDouble(Double sourceDouble) {
         return null;
-    };
+    }
 
 
     public String serialize() {
-        return null;
-    };
+        return "1:".concat(numerator.toString()).concat("/").concat(denominator.toString());
+    }
 
-    public static Rational deserialize(String) {
-        return null;
-    };
+    public static Rational deserialize(String sourceString) {
+        Rational deser;
+        String[] split = sourceString.split(":", 2);
+        switch (split[0]) {
+            case "1":
+                String[] rawRat = split[1].split("/", 2);
+                deser = new Rational(new BigInteger(rawRat[0]), new BigInteger(rawRat[1]));
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+        return deser;
+    }
 
 }
