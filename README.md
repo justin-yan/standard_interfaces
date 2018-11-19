@@ -1,5 +1,22 @@
-symbolic-math
-=============
+standard-interfaces
+===================
+
+This repository is a set of studies to learn a variety of different languages and to explore the power of their type systems.  In particular, we have libraries with modules for:
+
+- Base Algebraic Interfaces
+    - Category Theoretic Structures (Cat, Func, Applicative, etc.)
+    - Set Theoretic Structures (Sets, Relations+Properties, Functions+Properties, Operations+Properties)
+    - Algebraic Structures (Groups, Rings, Fields, Vector Spaces)
+- Base Algorithmic Interfaces
+    - Traversable/Iterable, etc.
+- Primitive Data Interfaces
+    - Domain Equality & Comparison
+    - Representation, Serialization, and Type Conversion
+
+Finally, we'll build libraries with concrete implementations of the above structures that play well together - Ring operations that compose over Collections, etc.
+
+
+## Symbolic Math
 
 Numeric formats, even "arbitrary precision" ones, suffer, fundamentally, from the loss of precision over the course of many operations.  For most practical purposes, the precision being lost is not of consequence, but where the uncertainty can be challenging is when many operations are performed, leading to compounding precision loss of an uncertain degree.
 
@@ -20,7 +37,7 @@ This collection of libraries provides the following:
     - A string serialization format and SerDe utilities to allow for cross-language transport.
 
 
-## Design
+### Design
 
 The general principle is to use arbitrary-precision *integer* formats in order to retain the numerator/denominator values and preserving those through all calculations, where the canonical representation is always the *fully reduced* fraction with the denominator *always* being a positive Integer.  Only when an actual decimal needs to be *rendered* do we perform the division and rounding as needed.
 
