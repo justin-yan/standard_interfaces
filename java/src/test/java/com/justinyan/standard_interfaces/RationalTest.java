@@ -1,4 +1,4 @@
-package com.justinyan.symbolicmath;
+package com.justinyan.standard_interfaces;
 
 import org.junit.Test;
 
