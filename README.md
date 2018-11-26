@@ -1,7 +1,13 @@
 standard-interfaces
 ===================
 
-This repository is a set of studies to learn a variety of different languages and to explore the power of their type systems.  In particular, we have libraries with modules for:
+This repository is a set of studies to learn a variety of different languages, their features, type systems, and toolchains.
+
+It is oriented around the following modules:
+
+## Base Interfaces
+
+These are basic mathematical structures and properties that we should be able to use to quickly scaffold out useful structure in the data and collections we build.
 
 - Base Algebraic Interfaces
     - Category Theoretic Structures (Cat, Func, Applicative, etc.)
@@ -13,10 +19,13 @@ This repository is a set of studies to learn a variety of different languages an
     - Domain Equality & Comparison
     - Representation, Serialization, and Type Conversion
 
-Finally, we'll build libraries with concrete implementations of the above structures that play well together - Ring operations that compose over Collections, etc.
+
+## Concrete Implementations
+
+We then wish to build concrete classes that can leverage the base structure in order to achieve useful re-use properties.
 
 
-## Symbolic Math
+### Symbolic Math
 
 Numeric formats, even "arbitrary precision" ones, suffer, fundamentally, from the loss of precision over the course of many operations.  For most practical purposes, the precision being lost is not of consequence, but where the uncertainty can be challenging is when many operations are performed, leading to compounding precision loss of an uncertain degree.
 
@@ -36,8 +45,7 @@ This collection of libraries provides the following:
     - Conversion utilities to/from all major numeric types, along with precision specification mechanisms for the precise handling of precision loss.
     - A string serialization format and SerDe utilities to allow for cross-language transport.
 
-
-### Design
+#### Design
 
 The general principle is to use arbitrary-precision *integer* formats in order to retain the numerator/denominator values and preserving those through all calculations, where the canonical representation is always the *fully reduced* fraction with the denominator *always* being a positive Integer.  Only when an actual decimal needs to be *rendered* do we perform the division and rounding as needed.
 
